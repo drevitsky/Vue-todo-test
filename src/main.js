@@ -11,3 +11,11 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+// Регистрируем глобальную пользовательскую директиву `v-focus`
+Vue.directive('focus', {
+  // Когда привязанный элемент вставлен в DOM...
+  inserted: function (el) {
+    // Переключаем фокус на элемент
+    el.focus()
+  }
+})
