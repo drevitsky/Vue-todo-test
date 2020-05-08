@@ -56,7 +56,7 @@ export default {
       })
       const index = this.todoList.length - 1
       this.$router.push({ name: 'Change', params: {id: index}})
-      window.scrollTo(0, 0, { behavior: 'smooth' })
+      
     }
   }
 }
@@ -92,6 +92,7 @@ export default {
     }
     &__body {
       padding: 1rem;
+      transition: all 1.5s;
     }
     &__item {
       margin: 0.5rem;

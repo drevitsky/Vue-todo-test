@@ -30,7 +30,7 @@
           <todo-item-task 
             class="todo-item__item"
             v-for="(todo,id) in todoCurrent.todo"
-            :key="id"
+            :key="todo"
             :class="{'complited' : todo.todoItemComplited}"
             :todo="todo"
             :index="index"

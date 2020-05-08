@@ -7,21 +7,22 @@
           v-if="!showInputTask"
           :for="`checkbox-${id}`"
           class="label-content"
-          >{{ todo.todoItemContent}}
+          >{{ todoItemContent}}
         </label>
         <div class="input-wrap" v-else>
           <input 
             type="text"
             v-focus
             name="task"
-            v-model="todo.todoItemContent"
+            v-model="todoItemContent"
             @blur="validateTask"
             class="input-task"
             ref="inputTask">
             <a
               href="#"
               title="Undo"
-              class="btn btn--undo" 
+              class="btn btn--undo"
+              :class="{'btn--undo-disabled' : undoDisabled }"
               @click.prevent="undoChange" >
             </a>
             <a
@@ -78,7 +79,9 @@ export default {
     return {
       showInputTask: false,
       emptyTask: false,
-      tempContent:''
+      tempContent:'',
+      undoDisabled: true,
+      todoItemContent: null
     }
   },
   methods: {
@@ -92,14 +95,15 @@ export default {
       this.showInputTask = true
     },
     saveChangeTask() {
-      this.tempContent = this.todo.todoItemContent
+      this.tempContent = this.todoItemContent
+      this.todo.todoItemContent = this.todoItemContent
       this.showInputTask = false
     },
     undoChange() {
-      this.todo.todoItemContent = this.tempContent
+      this.todoItemContent = this.tempContent
     },
     validateTask () {
-      if (!this.todo.todoItemContent) {
+      if (!this.todoItemContent) {
         this.emptyTask = true
       }
     },
@@ -120,16 +124,21 @@ export default {
       return this.todoList[this.index].todo[this.id]
     }
   },
-  // watch: {
-  //   todo (oldVal, newVal) {
-
-  //   }
-  // }, 
+  watch: {
+    todoItemContent () {
+      console.log('this.undoDisabled',this.undoDisabled)
+      if (this.tempContent !== this.todoItemContent) {
+        this.undoDisabled = false
+      } else {
+        this.undoDisabled = true
+      }
+      console.log('this.undoDisabled',this.undoDisabled)
+      
+    }
+  }, 
   mounted () {
-    console.log('this.todoList[this.index].todo',this.todoList[this.index].todo)
-    console.log('this.todoList',this.todoList)
-    console.log('this.index',this.index)
-    this.tempContent = this.todo.todoItemContent
+    this.todoItemContent = this.todo.todoItemContent
+    this.tempContent = this.todoItemContent
   }
 }
 </script>
@@ -182,12 +191,19 @@ export default {
       margin: 10px;
     }
   }
+  .btn:hover {
+    transform: scale(1.1);
+  }
   .btn--save {
     background: url('../assets/images/011-technology.svg') ;
     }
   .btn--undo {
     background: url('../assets/images/005-undo.svg') ;
-  }  
+  }
+  .btn--undo-disabled {
+      background: url('../assets/images/005-undo-d.svg') ;
+    }
+   
 </style>
 
 

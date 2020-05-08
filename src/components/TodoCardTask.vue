@@ -8,10 +8,12 @@
         @mouseover.stop="hover = true"
         @mouseleave.stop="hover = false"
         class="todo-item__content">
-        <!-- <transition name="fade" mode="out-in"> -->
-          <span v-if="!hover" key="small">{{ smallBody(todo.todoItemContent)}}</span>
-          <span v-else key="big">{{ todo.todoItemContent}}</span>
-        <!-- </transition> -->
+        
+          <span>{{ smallBody(todo.todoItemContent)}}</span>
+        <transition name="fade" mode="out-in">  
+          <span v-if="!hover && isBig" key="small">...</span>
+          <span v-else key="big">{{ restBody(todo.todoItemContent)}}</span>
+        </transition>
        
       </div>
   </div>
@@ -30,13 +32,18 @@ export default {
     smallBody(string) {
       if(string.length > 40) {
         this.isBig = true
-        // let str = string.substring(40, 60)
-        // let index = str.indexOf('.'||'\n'|| ' ')
-        // console.log('index', index)
-        let newString = string.substring(0, 40) + '...'
+        let newString = string.substring(0, 40)
         return newString
       }
       else return string
+    },
+    restBody(string) {
+      if(string.length > 40) {
+        this.isBig = true
+        let newString = string.substring(40,)
+        return newString
+      }
+      else return ''
     }
   },
   // mounted () {
@@ -83,11 +90,11 @@ export default {
     }
     
   } 
-// .fade-enter-active {
-//   transition: opacity 1s;
-// }
-// .fade-enter{
-//   opacity: 0;
-// }
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
   
 </style>
