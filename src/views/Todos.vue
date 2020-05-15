@@ -1,6 +1,6 @@
 <template>
   <div class="todos">
-    <h1 class="todo__title">Todos</h1>
+    <h1 class="page-title">Todos</h1>
     <transition-group class="todo__list" name="list" tag="div">  
       <li class="todo-item"        
         v-for="(item,index) in todoList"
@@ -14,7 +14,7 @@
     </transition-group>
     <a
       href="#"
-      class="btn__single" 
+      class="btn__single center-auto" 
       @click.prevent="addNewTodo" >
         Add new task list
     </a>
@@ -104,6 +104,9 @@ export default {
 </script>
 <style lang="scss">
   @import '@/assets/scss/_variables';
+  .todos {
+    text-align: center;
+  }
   ul, .todo__list {
     list-style-type: none;
     padding: 0;
@@ -119,6 +122,7 @@ export default {
     border-radius: 20px;
     margin: 2rem auto;
     width: 500px;
+    max-width: 90vw;
     &__header {
       display: flex;
       justify-content: space-between;
@@ -135,6 +139,9 @@ export default {
     &__body {
       padding: 1rem;
       transition: all 1.5s;
+      @media screen and (max-width: 768px) {
+        padding: 0.5rem 0;
+      }
     }
     &__item {
       margin: 0.5rem;
@@ -154,6 +161,9 @@ export default {
     height: 30px;
     display: inline-block;
     margin: 0 10px ;
+    @media screen and (max-width: 768px) {
+        margin: 0 5px;
+      }
     box-sizing: border-box;
     &--change {
       background: url('../assets/images/001-pencil.svg') ;
@@ -188,6 +198,9 @@ export default {
       &:active {
         transform: scale(0.95);
       }
+      @media screen and (max-width: 768px) {
+        padding: 15px;
+      }
     }
     &__more {
       border: none;
@@ -217,7 +230,6 @@ export default {
         height: 40px;
         background-image: url('../assets/images/012-up-arrow.svg');
       }
-      
     }
   }
   .btn--change-white,.btn--trash-white {

@@ -48,6 +48,7 @@ export default {
 
     &__window {
       position: absolute;
+      text-align: center;
       max-width: 500px;
       top: 50%;
       left: 50%;
@@ -56,6 +57,10 @@ export default {
       border-radius: 20px;
       background-color: #fff;
       box-shadow: 0px 10px 25px rgba(233, 101, 52, 0.5);
+      @media screen and (max-width: 768px) {
+        max-width: 90vw;
+        padding: 2rem;
+      }
     }
 
     &__text {

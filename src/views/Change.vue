@@ -1,6 +1,6 @@
 <template>
   <div class="change-todo">
-    <h1>You can change this todo</h1>
+    <h1 class="page-title">You can change this todo</h1>
     <div class="todo-item todo-item--change">
       <div class="todo-item__header">
         <h2 v-if="!showInputTitle" class="todo-item__title">{{ todoCurrent.title }}</h2>
@@ -289,10 +289,14 @@ export default {
 </script>
 <style lang="scss">
   @import '@/assets/scss/_variables';
+
   .todo-item__item {
     display: flex;
     justify-content: space-between;
     padding: 0.5rem;
+    @media screen and (max-width: 768px) {
+        padding: 0.5rem 0;
+      }
   }
   .todo-item--change {
     margin-bottom: 6rem;
@@ -403,6 +407,7 @@ export default {
     text-align: center;
     justify-content: center;
     &__wrap {
+      max-width: 90vw;
       width: 470px;
       display: flex;
       justify-content: space-between;
@@ -434,7 +439,7 @@ export default {
   .todo-item__header {
     position: sticky;
     top: 0;
-    z-index: 20;
+    z-index: 10;
   }
 </style>
 
