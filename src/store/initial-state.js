@@ -6,19 +6,19 @@ const initTodoList = [{
        },
        {
          "todoItemContent": "отменить редактирование (необходимо подтверждение)",
-         "todoItemComplited": false
+         "todoItemComplited": true
        },
        {
          "todoItemContent": "удалить (необходимо подтверждение)",
-         "todoItemComplited": false
+         "todoItemComplited": true
        },
        {
          "todoItemContent": "отменить внесенное изменение",
-         "todoItemComplited": false
+         "todoItemComplited": true
        },
        {
          "todoItemContent": "повторить отмененное изменение",
-         "todoItemComplited": false
+         "todoItemComplited": true
        }
      ]
    },
@@ -54,7 +54,7 @@ const initTodoList = [{
        },
        {
          "todoItemContent": "удалить (необходимо подтверждение)",
-         "todoItemComplited": false
+         "todoItemComplited": true
        }
      ]
    },
@@ -66,7 +66,7 @@ const initTodoList = [{
        },
        {
          "todoItemContent": "Подтверждение действий (удалить заметку) выполняется с помощью диалогового окна.",
-         "todoItemComplited": false
+         "todoItemComplited": true
        },
        {
          "todoItemContent": "Интерфейс должен отвечать требованиям usability.",
@@ -102,7 +102,7 @@ const initTodoList = [{
        },
        {
          "todoItemContent": "Адаптивность не обязательна, но приветствуется.",
-         "todoItemComplited": false
+         "todoItemComplited": true
        },
        {
          "todoItemContent": "Логика приложения должна быть разбита на разумное количество самодостаточных Vue-компонентов.",
