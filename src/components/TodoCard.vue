@@ -4,13 +4,15 @@
       <h2 class="todo-item__title">{{ item.title }}</h2>
       <div class="btns-wrapper">
         <router-link 
-          class="btn btn--change" 
+          class="btn btn--change-white"
+          title="Edit this card" 
           :to="{ name: 'Change', params: {id: index }}" >
         </router-link>
         <a 
           href="#" 
-          class="btn btn--trash"
+          class="btn btn--trash-white"
           @click.prevent="showDialogDelete"
+          title="Delete this card"
           ></a>
       </div>
     </div>
@@ -25,6 +27,23 @@
           :index="index"
           />
       </ul>
+      <ul class="todo-item__list" v-if="showMore">
+          <todo-card-task
+            class="todo-item__task"
+            v-for="(todo, index) in restTodolist"
+            :key="index"
+            :class="{'complited' : todo.todoItemComplited}"
+            :todo="todo"
+            :index="index"
+          />
+      </ul>
+      <button
+        v-if="item.todo.length > 4"
+        @click="showMore = !showMore"
+        class="btn__more"
+        :title="titleMore"
+        >{{btnMore}}
+      </button>
     </div>
     <div class="alert" v-show="isDelete">
       <div class="alert__mask">
@@ -51,7 +70,8 @@ export default {
   components: {TodoCardTask},
   data () {
     return {
-      isDelete: false
+      isDelete: false,
+      showMore: false
     }
   },
   methods: {
@@ -61,21 +81,35 @@ export default {
       setTimeout(() => {
         this.removeTodo(id)
       },0)
-      
-      
     },
     showDialogDelete() {
       this.isDelete = true
     }
-    
   },
   computed: {
     shortTodolist () {      
       if (this.item.todo.length > 4) {
         return this.item.todo.slice(0, 4)
-        
       }
       return this.item.todo
+    },
+    restTodolist () {
+      if (this.item.todo.length > 4) {
+        return this.item.todo.slice(4, )
+      }
+      return this.item.todo
+    },
+    btnMore () {
+      if (!this.showMore) {
+        return 'More...'
+      } else 
+      return 'Less...'
+    },
+    titleMore () {
+      if (!this.showMore) {
+        return 'See more tasks'
+      } else 
+      return 'See less tasks'
     }
   }
 }

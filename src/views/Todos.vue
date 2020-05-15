@@ -4,38 +4,43 @@
     <transition-group class="todo__list" name="list" tag="div">  
       <li class="todo-item"        
         v-for="(item,index) in todoList"
-        :key="item.title">
+        :key="item.title + '-' + index" :data-current="index">
         <todo-card
           :todoList="todoList"
           :item="item"
           :index="index"
           />
       </li>
-      </transition-group>
-      <a
+    </transition-group>
+    <a
+      href="#"
+      class="btn__single" 
+      @click.prevent="addNewTodo" >
+        Add new task list
+    </a>
+    <transition name="scroll">
+      <a 
         href="#"
-        class="btn__single" 
-        @click.prevent="addNewTodo" >
-          Add new task list
+        v-if="windowTop > 500"
+        class="btn__scroll"
+        @click.prevent="scrollToTop"
+        >
+      <span></span>
       </a>
-        
-    
+    </transition>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
 import { mapGetters, mapActions } from 'vuex'
-
-
 import TodoCard from '../components/TodoCard'
 
 export default {
   name: 'Todos',
   data () {
     return {
-      
+      showBtnScroll: false,
+      windowTop: null
     }
   },
   components: {
@@ -43,11 +48,12 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'todoList'
-    ])
+      'todoList',
+      'currentCard'
+    ]),
   },
   methods: {
-    ...mapActions(['addTodo']),
+    ...mapActions(['addTodo', 'setCurrentCard']),
     addNewTodo () {
       const id = this.todoList.length + 1
       this.addTodo({
@@ -57,11 +63,47 @@ export default {
       const index = this.todoList.length - 1
       this.$router.push({ name: 'Change', params: {id: index}})
       
+    },
+    scrollToCurrent () {
+      if(this.currentCard !== null) {
+        const block = document.querySelectorAll('.todo-item[data-current]')
+        let elem = null
+        block.forEach(el => {
+          if (+el.getAttribute('data-current') === this.currentCard) {
+            elem = el
+          }
+        })
+        const coordY = this.getCoords(elem)
+        window.scrollTo(0, coordY.top, { behavior: 'smooth' })
+      }
+    },
+    getCoords(elem) {
+      const box = elem.getBoundingClientRect()
+      return {
+        top: box.top + pageYOffset,
+        left: box.left + pageXOffset
+      }
+    },
+    scrollToTop () {
+      window.scrollTo({ top: 0,left: 0, behavior: 'smooth' })
+    },
+    onScroll() {
+      this.windowTop = window.top.scrollY
     }
+  },
+  mounted () {
+    this.scrollToCurrent()
+    this.setCurrentCard(null)
+    window.addEventListener("scroll", this.onScroll)
+  },
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.onScroll)
+
   }
 }
 </script>
 <style lang="scss">
+  @import '@/assets/scss/_variables';
   ul, .todo__list {
     list-style-type: none;
     padding: 0;
@@ -73,19 +115,19 @@ export default {
     background-color: #fff;
   }
   .todo-item {
-    box-shadow: 1px 1px 5px 2px #0005 ;
-    border-radius: 5px;
+    box-shadow: 1px 1px 5px 2px rgba($bgc_theme, 0.5);
+    border-radius: 20px;
     margin: 2rem auto;
     width: 500px;
     &__header {
       display: flex;
       justify-content: space-between;
-      background-color: #777;
+      background-color: $bgc_theme;
       color: #fff;
       padding: 1rem;
-      border-top-right-radius: 5px;
-      border-top-left-radius: 5px;
-      box-shadow: 0 2px 5px -2px #777 ;
+      border-top-right-radius: 20px;
+      border-top-left-radius: 20px;
+      box-shadow: 0 2px 5px -2px $bgc_theme ;
       h2 {
         margin: 0;
       }
@@ -96,7 +138,7 @@ export default {
     }
     &__item {
       margin: 0.5rem;
-      border-bottom: 1px solid #eee;
+      border-bottom: 2px solid $line-color;
     }
     &--add {
       padding: 30px;
@@ -115,38 +157,105 @@ export default {
     box-sizing: border-box;
     &--change {
       background: url('../assets/images/001-pencil.svg') ;
+      
+    }
+    &--change-white {
+      background: url('../assets/images/001-pencil-white.svg') ;
+
     }
     
     &--trash {
       background: url('../assets/images/004-interface.svg') ;
     }
+    &--trash-white {
+      background: url('../assets/images/004-interface-white.svg') ;
+    }
     &__single {
+      background-color: $accent_color;
       box-sizing: border-box;
-      border-radius: 5px;
-      border: 1px solid #eee;
+      border-radius: 22px;
       display: inline-block;
       padding: 15px 25px;
       text-decoration: none;
-      color: #000;
-      box-shadow: 1px 1px 2px 1px #0005;
+      text-transform: uppercase;
+      line-height: 16px;
+      color: #fff;
+      box-shadow: $accent-box-shadow;
       &:hover {
-        box-shadow: 1px 1px 5px 2px #0005;
+        box-shadow: $accent-box-shadow--hover;
+        background-color: $accent_hover;
       }
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+    &__more {
+      border: none;
+      outline: none;
+      color: $accent_color;
+      text-transform: uppercase;
+      background-color: #fff;
+      cursor: pointer;
+    }
+    &__scroll {
+      position: fixed;
+      display: inline-block;
+      width: 60px;
+      height: 60px;
+      background-color: $accent_color;
+      right: 15px;
+      bottom: 15px;
+      border-radius: 50%;
+      padding: 10px;
+      opacity: 0.5;
+      &:hover {
+        opacity: 0.8;
+      }
+      span {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background-image: url('../assets/images/012-up-arrow.svg');
+      }
+      
+    }
+  }
+  .btn--change-white,.btn--trash-white {
+    &:hover {
+      transform: scale(1.05);
+    }
+    &:active {
+      transform: scale(0.95);
     }
   }
   .list-enter-active, .list-leave-active {
-  transition: all 1s;
-}
-.list-leave-active {
-  // position: absolute;
-}
-.list-enter, .list-leave-to {
-  opacity: 0;
-  transform: translateY(-50px);
-  transition: all 1s;
-}
-.list-move {
-  transition: transform 1s;
-}
+    transition: all 1s;
+  }
+  .list-enter, .list-leave-to {
+    opacity: 0;
+    transform: translateY(-50px);
+    transition: all 1s;
+  }
+  .list-move {
+    transition: transform 1s;
+  }
+  .scroll-enter-active  {
+    transition: all 0.5s ease-in;
+    opacity: .8;
+  }
+  .scroll-leave-active {
+    transition: all 1s ease-out;
+  }  
+  .scroll-active {
+    transition: all 1s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .scroll-enter {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  .scroll-leave-to {
+    transform: translateY(100px);
+    opacity: 0;
+  }
   
 </style>

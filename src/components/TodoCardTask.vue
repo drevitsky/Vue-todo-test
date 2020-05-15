@@ -24,7 +24,7 @@ export default {
   name: 'TodoCardTask',
   data () {
     return {
-      hover:false,
+      hover: false,
       isBig: false
     }
   },
@@ -45,10 +45,7 @@ export default {
       }
       else return ''
     }
-  },
-  // mounted () {
-  //   this.hover = false
-  // }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -67,7 +64,7 @@ export default {
       content:'';
       width: 30px;
       height: 30px;
-      background: url('../assets/images/check.svg');
+      background: url('../assets/images/check-accent.svg');
       top: 0;
       left: 0;
     }
@@ -81,17 +78,16 @@ export default {
     line-height: 30px;
     cursor: pointer;
     span {
-      display: inline-block;
+      word-wrap: anywhere;
     }
   }
   .complited {
     span {
       text-decoration: line-through;
     }
-    
   } 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s;
+  transition: opacity 0.5s;
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;

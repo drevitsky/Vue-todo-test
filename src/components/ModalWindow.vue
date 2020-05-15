@@ -32,6 +32,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  @import '@/assets/scss/_variables';
   .modal {
     &__mask {
       position: fixed;
@@ -42,18 +43,19 @@ export default {
       width: 100%;
       height: 100%;
       z-index: 10;
-      background-color: #0007;
-      // filter: blur(2px);
+      background-color: rgba($bgc_theme, 0.5);
     }
 
     &__window {
       position: absolute;
+      max-width: 500px;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       padding: 5rem;
-      border-radius: 10px;
+      border-radius: 20px;
       background-color: #fff;
+      box-shadow: 0px 10px 25px rgba(233, 101, 52, 0.5);
     }
 
     &__text {
@@ -67,9 +69,21 @@ export default {
     }
 
     &__btn {
+      border: none;
       padding: 10px 15px;
-      border-radius: 5px;
+      border-radius: 22px;
+      min-width: 100px;
       margin: 10px;
+      background-color: $accent_color;
+      box-shadow: $accent-box-shadow;
+      &:hover {
+        box-shadow: $accent-box-shadow--hover;
+        background-color: $accent_hover;
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
     }
   }
 </style>

@@ -1,7 +1,11 @@
 <template>
   <div class="todo-item-task">
     <div class="col col-content">
-        <input type="checkbox" :id="`checkbox-${id}`" v-model="todo.todoItemComplited">
+        <input
+          type="checkbox" 
+          :id="`checkbox-${id}`" 
+          v-model="todo.todoItemComplited"
+          @change="rememberState">
         <label :for="`checkbox-${id}`" class="label-check"></label>
         <label
           v-if="!showInputTask"
@@ -10,21 +14,16 @@
           >{{ todoItemContent}}
         </label>
         <div class="input-wrap" v-else>
-          <input 
-            type="text"
+          <textarea
             v-focus
+            @focus="firstFocus"
+            :style="computedStyles"
             name="task"
             v-model="todoItemContent"
             @blur="validateTask"
+            @change="rememberState"
             class="input-task"
-            ref="inputTask">
-            <a
-              href="#"
-              title="Undo"
-              class="btn btn--undo"
-              :class="{'btn--undo-disabled' : undoDisabled }"
-              @click.prevent="undoChange" >
-            </a>
+            ref="inputTask"></textarea>
             <a
             href="#"
             title="Save"
@@ -44,7 +43,8 @@
           @click.prevent="changeTask" >
         </a>
         <a href="#"
-          class="btn btn--close" 
+          class="btn btn--close"
+          title="Delete task" 
           @click.prevent="removeTodoTask(id)" 
           >
           <span class="span-1"></span>
@@ -71,7 +71,7 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   props: ['todo', 'index', 'todoCurrent', 'id'],
@@ -79,15 +79,20 @@ export default {
     return {
       showInputTask: false,
       emptyTask: false,
-      tempContent:'',
-      undoDisabled: true,
-      todoItemContent: null
+      todoItemContent: null,
+      heightText: '16',
+      currentTarget: null
     }
   },
   methods: {
+    ...mapActions([
+      'addHistoryStep'
+    ]),
     removeTodoTask(id) {
       this.todoCurrent.todo.splice(id, 1)
+      this.rememberState()
       if (this.todoCurrent.todo.length === 0) {
+        // eslint-disable-next-line no-console
         console.log('You want delete task?')
       }
     },
@@ -95,50 +100,59 @@ export default {
       this.showInputTask = true
     },
     saveChangeTask() {
-      this.tempContent = this.todoItemContent
       this.todo.todoItemContent = this.todoItemContent
       this.showInputTask = false
-    },
-    undoChange() {
-      this.todoItemContent = this.tempContent
+      this.rememberState()
     },
     validateTask () {
       if (!this.todoItemContent) {
         this.emptyTask = true
+      }else {
+        this.saveChangeTask()
       }
     },
     removeClose () {
       this.emptyTask = false
-      this.removeTodoTask(this.index)
+      this.removeTodoTask(this.id)
     },
     continueClose () {
       this.emptyTask = false
       this.$refs.inputTask.focus()
+    },
+    firstFocus (e) {
+      this.currentTarget = e
+      this.resize (e)
+    },
+    resize (e) {
+      this.$nextTick(() => {
+        this.heightText = e.target.scrollHeight
+      })
+      return this
+    },
+    rememberState () {
+      this.$emit('rememberState')
     }
   },
-  computed: {    
+  computed: {
     ...mapState([
-      'todoList'
+      'todoList',
+      'historyState'
     ]),
-    todo1 () {
-      return this.todoList[this.index].todo[this.id]
-    }
+    computedStyles () {
+      return {
+        height: this.heightText + 'px'
+      }
+    },
   },
   watch: {
     todoItemContent () {
-      console.log('this.undoDisabled',this.undoDisabled)
-      if (this.tempContent !== this.todoItemContent) {
-        this.undoDisabled = false
-      } else {
-        this.undoDisabled = true
+      if (this.currentTarget) {
+        this.resize(this.currentTarget)
       }
-      console.log('this.undoDisabled',this.undoDisabled)
-      
     }
-  }, 
+  },
   mounted () {
     this.todoItemContent = this.todo.todoItemContent
-    this.tempContent = this.todoItemContent
   }
 }
 </script>
@@ -155,41 +169,8 @@ export default {
     border: none;
     margin-left: 15px;
     font-size: 1rem;
-  }
-  .alert {
-    &__mask {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 10;
-      background-color: #0007;
-    }
-    &__window {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 5rem;
-      border-radius: 10px;
-      background-color: #fff;
-    }
-    &__text {
-      font-size: 30px;
-      margin-bottom: 30px;
-    }
-    &__btn_wrap {
-      display: flex;
-      justify-content: space-between;
-    }
-    &__btn {
-      padding: 10px 15px;
-      border-radius: 5px;
-      margin: 10px;
-    }
+    max-height: 10rem;
+    resize: none;
   }
   .btn:hover {
     transform: scale(1.1);
