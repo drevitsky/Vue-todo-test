@@ -312,6 +312,7 @@ export default {
     font-weight: bold;
     outline: none;
     caret-color: $accent-color;
+    max-width: 75%;
   }
   .col-change, {
     display: flex;
